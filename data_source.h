@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstddef>
+#include <boost/asio/buffer.hpp>
+#include <boost/container/static_vector.hpp>
 
 
 namespace http {
@@ -11,6 +13,12 @@ namespace http {
     class data_source
     {
         public:
+            /**
+             *  The container we use for data buffers/
+             */
+            using buffers_type = boost::container::static_vector<boost::asio::const_buffer, 8>;
+
+
             /**
              *  Destructor
              */
@@ -24,13 +32,12 @@ namespace http {
             virtual bool is_done() noexcept = 0;
 
             /**
-             *  Retrieve bytes to be send
+             *  Retrieve bytes to be sent
              *
-             *  @param  data    Reference to data pointer to send
-             *  @param  size    Reference to size of data to send
-             *  @return Whether the data and size were set
+             *  @param  ec      The error code from getting the data
+             *  @return An array of buffers to be sent
              */
-            virtual bool next(const void*& data, std::size_t& size) noexcept = 0;
+            virtual buffers_type next(boost::system::error_code& ec) noexcept = 0;
 
             /**
              *  Consume bytes

@@ -50,13 +50,20 @@ namespace http {
 
                 // is the data source exhausted?
                 if (!_data.is_done()) {
-                    // the data to write to the socket
-                    const void* data;
-                    std::size_t size;
+                    // the error code from retrieving the data
+                    boost::system::error_code ec;
 
-                    // retrieve data to write and write it to the connection
-                    _data.next(data, size);
-                    _stream.async_write_some(boost::asio::const_buffer(data, size), *this);
+                    // the data to send
+                    auto buffers = _data.next(ec);
+
+                    // check if we managed to get the data
+                    if (ec != boost::system::error_code{}) {
+                        // failed to get the data, abort now
+                        return _handler(ec);
+                    }
+
+                    // write the data on the stream
+                    _stream.async_write_some(buffers, *this);
                 } else {
                     // all data was sent, invoke the final handler
                     _handler(ec);

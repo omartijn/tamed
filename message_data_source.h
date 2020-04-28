@@ -41,36 +41,34 @@ namespace http {
             }
 
             /**
-             *  Retrieve bytes to be send
+             *  Retrieve bytes to be sent
              *
-             *  @param  data    Reference to data pointer to send
-             *  @param  size    Reference to size of data to send
-             *  @return Whether the data and size were set
+             *  @param  ec      The error code from getting the data
+             *  @return An array of buffers to be sent
              */
-            bool next(const void*& data, std::size_t& size) noexcept override
+            buffers_type next(boost::system::error_code& ec) noexcept override
             {
-                // did we get the data, and the error from the operation
-                bool                        data_set{ false };
-                boost::system::error_code   ec      {       };
+                // the buffers to fill
+                buffers_type result;
 
                 // visit the serializer to get the data
-                _serializer.next(ec, [&data, &size, &data_set](boost::system::error_code&, const auto& buffer_sequence) {
-                    // is the buffer sequence empty?
-                    if (buffer_sequence.begin() == buffer_sequence.end()) {
-                        // an empty sequence has no data
-                        return;
+                _serializer.next(ec, [&result](boost::system::error_code&, const auto& buffer_sequence) {
+                    // process all buffers
+                    for (const auto& buffer : buffer_sequence) {
+                        // has the result reached capacity? then we cannot
+                        // add more buffers. they will have to be retrieved
+                        // later after consuming some of the existing data
+                        if (result.size() == result.capacity()) {
+                            break;
+                        }
+
+                        // add the buffer to the result
+                        result.emplace_back(buffer.data(), buffer.size());
                     }
-
-                    // set the data and size
-                    data = (*buffer_sequence.begin()).data();
-                    size = (*buffer_sequence.begin()).size();
-
-                    // we have the data
-                    data_set = true;
                 });
 
-                // check whether the data was set
-                return data_set;
+                // return the filled buffer list
+                return result;
             }
 
             /**
