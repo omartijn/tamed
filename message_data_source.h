@@ -6,7 +6,7 @@
 #include "data_source.h"
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  Message serializer for a

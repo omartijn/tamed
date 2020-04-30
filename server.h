@@ -7,7 +7,7 @@
 #include <router/table.h>
 
 
-namespace http {
+namespace tamed {
 
     template <typename body_type = boost::beast::http::string_body, typename executor_type = boost::asio::executor>
     class server

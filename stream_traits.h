@@ -5,7 +5,7 @@
 #include <boost/asio/basic_socket_acceptor.hpp>
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  Fallback struct for a stream that does not

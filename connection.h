@@ -9,7 +9,7 @@
 #include "stream_traits.h"
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  Class to handle the requests from a single connection

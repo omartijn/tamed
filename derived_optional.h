@@ -4,7 +4,7 @@
 #include <utility>
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  An optional value, containing any class

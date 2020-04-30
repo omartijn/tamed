@@ -9,7 +9,7 @@
 #include "connection.h"
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  Class for initiating an asynchronous

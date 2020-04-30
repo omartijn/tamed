@@ -5,7 +5,7 @@
 #include <boost/container/static_vector.hpp>
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  An abstract data source

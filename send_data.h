@@ -3,7 +3,7 @@
 #include "data_source.h"
 
 
-namespace http {
+namespace tamed {
 
     /**
      *  Asynchronous operation to send data
