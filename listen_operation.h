@@ -15,7 +15,7 @@ namespace tamed {
      *  Class for initiating an asynchronous
      *  listen operation.
      */
-    template <typename body_type, typename protocol_type, typename executor_type, typename... arguments>
+    template <typename body_type, typename protocol_type, typename executor_type, typename router_type, typename... arguments>
     class listen_operation
     {
         public:
@@ -24,18 +24,15 @@ namespace tamed {
             using endpoint_type     = typename acceptor_type::endpoint_type;
             using socket_type       = boost::asio::basic_stream_socket<protocol_type, executor_type>;
             using stream_type       = typename async_stream_traits<endpoint_type, arguments...>::stream_type;
-            using connection_type   = connection<request_body_type>;
-            using request_type      = typename connection_type::request_type;
-            using routing_table     = router::table<void(connection_type, request_type&&)>;
 
             /**
              *  Constructor
              *
-             *  @param  router      The routing table to route the requests
+             *  @param  router      The routing map to route the requests
              *  @param  executor    The executor for creating the acceptor and socket
              *  @param  parameters  Additional parameters for constructing the stream
              */
-            listen_operation(routing_table& router, executor_type executor, arguments&&... parameters) :
+            listen_operation(router_type& router, executor_type executor, arguments&&... parameters) :
                 _router{ router },
                 _acceptor{ std::make_shared<acceptor_type>(executor) },
                 _parameters{ std::forward<arguments>(parameters)... }
@@ -84,11 +81,11 @@ namespace tamed {
                     std::cerr << "Listening failed: " << ec.message() << std::endl;
                 } else {
                     // create a new connection handler
-                    connection_type handler{ _router };
+                    connection handler;
 
                     // accept the incoming connection
-                    std::apply(&connection_type::template accept<acceptor_type, arguments...>, std::tuple_cat(
-                        std::forward_as_tuple(&handler, *_acceptor),
+                    std::apply(&connection::template accept<body_type, router_type, acceptor_type, arguments...>, std::tuple_cat(
+                        std::forward_as_tuple(&handler, _router, *_acceptor),
                         _parameters
                     ));
 
@@ -97,7 +94,7 @@ namespace tamed {
                 }
             }
         private:
-            routing_table&                  _router;        // the routing table to disperse requests
+            router_type&                    _router;        // the router map to route requests
             std::shared_ptr<acceptor_type>  _acceptor;      // acceptor for incoming connections
             std::tuple<arguments...>        _parameters;    // additional parameters for connections
     };
