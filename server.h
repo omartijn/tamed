@@ -63,20 +63,41 @@ namespace tamed {
              *  Listen at the given endpoint
              *
              *  @param  endpoint    The endpoint to listen to
-             *  @param  parameters  Additional arguments
+             *  @return The error code from the operation
              */
-            template <typename endpoint_type, typename... arguments>
-            boost::system::error_code listen(const endpoint_type& endpoint, arguments&&... parameters)
+            template <typename endpoint_type>
+            boost::system::error_code listen(const endpoint_type& endpoint)
             {
                 // deduce the protocol type and the listener to create
                 using protocol_type = typename endpoint_type::protocol_type;
-                using listener_type = listen_operation<request_body_type, protocol_type, executor_type, map_type, arguments...>;
+                using listener_type = listen_operation<request_body_type, protocol_type, executor_type, map_type>;
+
+                // create a listener, initialize it and return the result
+                return listener_type{
+                    _routers,
+                    _executor
+                }(endpoint);
+            }
+
+            /**
+             *  Listen at the given endpoint
+             *
+             *  @param  endpoint    The endpoint to listen to
+             *  @param  context     The TLS context for transport encryption
+             *  @return The error code from the operation
+             */
+            template <typename endpoint_type>
+            boost::system::error_code listen(const endpoint_type& endpoint, boost::asio::ssl::context& context)
+            {
+                // deduce the protocol type and the listener to create
+                using protocol_type = typename endpoint_type::protocol_type;
+                using listener_type = listen_operation<request_body_type, protocol_type, executor_type, map_type, boost::asio::ssl::context&>;
 
                 // create a listener, initialize it and return the result
                 return listener_type{
                     _routers,
                     _executor,
-                     std::forward<arguments>(parameters)...
+                    context
                 }(endpoint);
             }
         private:
