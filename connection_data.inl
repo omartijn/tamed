@@ -1,9 +1,43 @@
 #pragma once
 
 #include "connection.h"
+#include "read_operation.h"
+#include "write_operation.h"
 
 
 namespace tamed {
+
+    /**
+     *  Accept an incoming connection
+     *
+     *  @param  acceptor    The acceptor to that has an incoming connection waiting
+     */
+    template <class router_type, class body_type, typename stream_type, typename executor_type>
+    template <typename acceptor_type>
+    void connection_data_impl<router_type, body_type, stream_type, executor_type>::accept(acceptor_type& acceptor) noexcept
+    {
+        // the error code from the operation
+        boost::system::error_code ec;
+
+        // accept the incoming connection
+        acceptor.accept(socket.lowest_layer(), ec);
+
+        // check whether the socket was accepted successfully
+        if (ec != boost::system::error_code{}) {
+            // cannot continue without an open socket
+            std::cerr << "Error during socket accept: " << ec.message() << std::endl;
+            return;
+        }
+
+        // do we have a stream with support for asynchronous handshakes?
+        if constexpr (is_async_tls_stream_v<stream_type>) {
+            // initiate the SSL handshake
+            socket.async_handshake(boost::asio::ssl::stream_base::server, handshake_operation{ this->shared_from_this() });
+        } else {
+            // no handshake required, proceed directly to reading the request
+            read_request();
+        }
+    }
 
     /**
      *  Read request data
@@ -12,8 +46,7 @@ namespace tamed {
     void connection_data_impl<router_type, body_type, stream_type, executor_type>::read_request() noexcept
     {
         // read from the socket into the request
-        boost::beast::http::async_read(socket, buffer, this->request, connection{ this->shared_from_this() });
-        this->state = state::reading;
+        boost::beast::http::async_read(socket, buffer, this->request, read_operation{ this->shared_from_this() });
     }
 
     /**
@@ -24,7 +57,7 @@ namespace tamed {
     void connection_data_impl<router_type, body_type, stream_type, executor_type>::route_request() noexcept
     {
         // do we need to close the connection after writing
-        this->close = request.need_eof();
+        close = request.need_eof();
 
         try {
             // extract the target the request goes to
@@ -48,13 +81,14 @@ namespace tamed {
 
     /**
      *  Write response data
+     *
+     *  @param  response    The response message to write
      */
     template <class router_type, class body_type, typename stream_type, typename executor_type>
-    void connection_data_impl<router_type, body_type, stream_type, executor_type>::write_response() noexcept
+    void connection_data_impl<router_type, body_type, stream_type, executor_type>::write_response(data_source& response) noexcept
     {
         // start sending the response over the stream
-        async_send_data(socket, *this->response, connection{ this->shared_from_this() });
-        this->state = state::writing;
+        async_send_data(socket, response, write_operation{ this->shared_from_this() });
     }
 
 }

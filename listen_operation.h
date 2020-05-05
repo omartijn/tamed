@@ -80,14 +80,17 @@ namespace tamed {
                     // log the error that occured
                     std::cerr << "Listening failed: " << ec.message() << std::endl;
                 } else {
-                    // create a new connection handler
-                    connection handler;
+                    // the connection data type to create
+                    using data_type = connection_data_impl<router_type, body_type, stream_type, executor_type>;
 
-                    // accept the incoming connection
-                    std::apply(&connection::template accept<body_type, router_type, acceptor_type, arguments...>, std::tuple_cat(
-                        std::forward_as_tuple(&handler, _router, *_acceptor),
+                    // create the connection data
+                    auto impl = std::apply(std::make_shared<data_type, router_type&, executor_type, arguments...>, std::tuple_cat(
+                        std::forward_as_tuple(_router, _acceptor->get_executor()),
                         _parameters
                     ));
+
+                    // accept the incoming connection
+                    impl->accept(*_acceptor);
 
                     // continue listening for new connections
                     _acceptor->async_wait(boost::asio::socket_base::wait_read, *this);
