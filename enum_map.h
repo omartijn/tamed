@@ -19,6 +19,30 @@ namespace tamed {
             /**
              *  Access specified element
              *
+             *  @param  index   The index of the element to retrieve
+             *  @return Reference to the mapped type
+             *  @throws std::out_of_range
+             */
+            const mapped_type& at(std::size_t index) const
+            {
+                return _values.at(index);
+            }
+
+            /**
+             *  Access specified element
+             *
+             *  @param  index   The index of the element to retrieve
+             *  @return Reference to the mapped type
+             *  @throws std::out_of_range
+             */
+            mapped_type& at(std::size_t index)
+            {
+                return _values.at(index);
+            }
+
+            /**
+             *  Access specified element
+             *
              *  @param  key The key to look up
              *  @return Reference to the mapped type
              *  @throws std::out_of_range
@@ -43,13 +67,25 @@ namespace tamed {
             /**
              *  Access specified element
              *
-             *  @param  key The key to look up
+             *  @param  index   The index of the element to retrieve
              *  @return Reference to the mapped type
-             *  @throws std::out_of_range
+             *  @precondition   The key must be smaller than size()
              */
-            const mapped_type& operator[](key_type key) const
+            const mapped_type& operator[](std::size_t index) const
             {
-                return _values[find_index(key)];
+                return _values[index];
+            }
+
+            /**
+             *  Access specified element
+             *
+             *  @param  index   The index of the element to retrieve
+             *  @return Reference to the mapped type
+             *  @precondition   The key must be smaller than size()
+             */
+            mapped_type& operator[](std::size_t index)
+            {
+                return _values[index];
             }
 
             /**

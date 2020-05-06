@@ -80,6 +80,39 @@ namespace tamed {
             }
 
             /**
+             *  Set a handler for endpoints that are not found
+             *
+             *  @tparam callback    The callback to route to
+             */
+            template <auto callback>
+            std::enable_if_t<!std::is_member_function_pointer_v<decltype(callback)>>
+            set_not_found()
+            {
+                // all routing tables get the handler
+                for (std::size_t index{ 0 }; index < _routers.size(); ++index) {
+                    // install handler on the table
+                    _routers[index].template set_not_found<callback>();
+                }
+            }
+
+            /**
+             *  Set a handler for endpoints that are not found
+             *
+             *  @tparam callback    The callback to route to
+             *  @param  instance    The instance to invoke the callback on
+             */
+            template <auto callback>
+            std::enable_if_t<std::is_member_function_pointer_v<decltype(callback)>>
+            set_not_found(typename router::function_traits<decltype(callback)>::member_type* instance)
+            {
+                // all routing tables get the handler
+                for (std::size_t index{ 0 }; index < _routers.size(); ++index) {
+                    // install handler on the table
+                    _routers[index].template set_not_found<callback>(instance);
+                }
+            }
+
+            /**
              *  Listen at the given endpoint
              *
              *  @param  endpoint    The endpoint to listen to
