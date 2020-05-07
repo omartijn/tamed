@@ -27,6 +27,16 @@ namespace tamed {
             {}
 
             /**
+             *  Retrieve the executor
+             *
+             *  @return The executor associated with the connection
+             */
+            executor_type get_executor() noexcept
+            {
+                return _data->get_executor();
+            }
+
+            /**
              *  Handle the completion of reading the request
              *
              *  @param  ec      The error code from the operation

@@ -68,6 +68,13 @@ namespace tamed {
             {}
 
             /**
+             *  Retrieve the executor
+             *
+             *  @return The executor associated with the connection
+             */
+            executor_type get_executor() noexcept;
+
+            /**
              *  Accept an incoming connection
              *
              *  @param  acceptor    The acceptor to that has an incoming connection waiting

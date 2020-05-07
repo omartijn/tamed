@@ -8,6 +8,17 @@
 namespace tamed {
 
     /**
+     *  Retrieve the executor
+     *
+     *  @return The executor associated with the connection
+     */
+    template <class router_type, class body_type, typename stream_type, typename executor_type>
+    executor_type connection_data_impl<router_type, body_type, stream_type, executor_type>::get_executor() noexcept
+    {
+        return socket.get_executor();
+    }
+
+    /**
      *  Accept an incoming connection
      *
      *  @param  acceptor    The acceptor to that has an incoming connection waiting

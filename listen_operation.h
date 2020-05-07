@@ -39,6 +39,16 @@ namespace tamed {
             {}
 
             /**
+             *  Retrieve the executor
+             *
+             *  @return The executor associated with the connection
+             */
+            executor_type get_executor() noexcept
+            {
+                return _acceptor.get_executor();
+            }
+
+            /**
              *  Start listening for incoming connections
              *
              *  @param  endpoint    The endpoint to listen on
