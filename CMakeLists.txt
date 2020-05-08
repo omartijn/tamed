@@ -30,6 +30,7 @@ if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 option(TAMED_TEST "Build the tests" ${TAMED_MASTER_PROJECT})
+option(TAMED_EXAMPLES "Build the examples" OFF)
 
 install(
     DIRECTORY   include/tamed
@@ -81,4 +82,8 @@ install(
 
 if (TAMED_TEST)
     add_subdirectory(tests)
+endif()
+
+if (TAMED_EXAMPLES)
+    add_subdirectory(examples)
 endif()
