@@ -152,4 +152,10 @@ namespace tamed {
             map_type        _routers;   // the tables to route requests
     };
 
+    /**
+     *  Pre-defined server types for REST and WebDAV servers
+     */
+    using rest_server   = server<rest_config>;
+    using webdav_server = server<webdav_config>;
+
 }

@@ -53,4 +53,39 @@ namespace tamed {
         using with_methods = config<body, executor, methods...>;
     };
 
+    /**
+     *  Pre-defined server config for a simple REST server
+     */
+    using rest_config = config<>
+        ::with_body_type<boost::beast::http::string_body>
+        ::with_executor_type<boost::asio::io_context::executor_type>
+        ::with_methods<
+            boost::beast::http::verb::get,
+            boost::beast::http::verb::post,
+            boost::beast::http::verb::put,
+            boost::beast::http::verb::delete_
+        >;
+
+    /**
+     *  Pre-defined server config for a WebDAV server
+     */
+    using webdav_config = config<>
+        ::with_body_type<boost::beast::http::string_body>
+        ::with_executor_type<boost::asio::io_context::executor_type>
+        ::with_methods<
+            boost::beast::http::verb::get,
+            boost::beast::http::verb::head,
+            boost::beast::http::verb::post,
+            boost::beast::http::verb::put,
+            boost::beast::http::verb::delete_,
+            boost::beast::http::verb::move,
+            boost::beast::http::verb::copy,
+            boost::beast::http::verb::lock,
+            boost::beast::http::verb::unlock,
+            boost::beast::http::verb::mkcol,
+            boost::beast::http::verb::options,
+            boost::beast::http::verb::propfind,
+            boost::beast::http::verb::proppatch
+        >;
+
 }
