@@ -43,6 +43,16 @@ namespace tamed {
             {}
 
             /**
+             *  Constructor
+             *
+             *  @param  io_context  The io context to use
+             */
+            template <typename X = executor_type, typename = std::enable_if_t<std::is_constructible_v<X, boost::asio::io_context::executor_type>>>
+            server(boost::asio::io_context& io_context) :
+                server{ io_context.get_executor() }
+            {}
+
+            /**
              *  Add an endpoint to be handled
              *
              *  @tparam callback    The callback to route to

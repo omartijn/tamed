@@ -35,7 +35,7 @@ int main()
     using server_type = tamed::server<server_config>;
 
     boost::asio::io_context         io_context  {                                                   };
-    server_type                     server      { io_context.get_executor()                         };
+    server_type                     server      { io_context                                        };
     boost::asio::ip::tcp::endpoint  endpoint    { boost::asio::ip::make_address("127.0.0.1"), 8080  };
 
     server.add<handle_slash>(boost::beast::http::verb::get, "/");
