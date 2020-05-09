@@ -23,11 +23,16 @@ void handle_not_found(tamed::connection connection, boost::beast::http::request<
 
 int main()
 {
-    using server_type = tamed::server<boost::beast::http::string_body, boost::asio::executor,
-        boost::beast::http::verb::get,
-        boost::beast::http::verb::post,
-        boost::beast::http::verb::put
-    >;
+    using server_config = tamed::config<>
+        ::with_body_type<boost::beast::http::string_body>
+        ::with_executor_type<boost::asio::io_context::executor_type>
+        ::with_methods<
+            boost::beast::http::verb::get,
+            boost::beast::http::verb::post,
+            boost::beast::http::verb::put
+        >;
+
+    using server_type = tamed::server<server_config>;
 
     boost::asio::io_context         io_context  {                                                   };
     server_type                     server      { io_context.get_executor()                         };

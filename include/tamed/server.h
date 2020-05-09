@@ -6,12 +6,26 @@
 #include <boost/asio/local/stream_protocol.hpp>
 #include <router/table.h>
 #include "enum_map.h"
+#include "config.h"
 
 
 namespace tamed {
 
-    template <typename body_type = boost::beast::http::string_body, typename executor_type = boost::asio::executor, boost::beast::http::verb... verbs>
-    class server
+    /**
+     *  Define the server as a templated type
+     *  unimplemented to use with with a config
+     */
+    template <typename>
+    class server;
+
+    /**
+     *  Server implementation.
+     *
+     *  This class can be used with a config specialization, to
+     *  customize certain behaviours of the server.
+     */
+    template <typename body_type, typename executor_type, boost::beast::http::verb... verbs>
+    class server<config<body_type, executor_type, verbs...>>
     {
         public:
             using request_body_type = body_type;
