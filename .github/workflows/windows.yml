@@ -20,4 +20,4 @@ jobs:
     - name: build
       run: cmake --build build
     - name: test
-      run: .\build\tests\Debug\test.exe
+      run: .\build\tests\Debug\tamed-test.exe

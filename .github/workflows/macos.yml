@@ -22,4 +22,4 @@ jobs:
     - name: build
       run: cmake --build build
     - name: test
-      run: ./build/tests/test
+      run: ./build/tests/tamed-test
