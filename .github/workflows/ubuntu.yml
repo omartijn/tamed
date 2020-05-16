@@ -18,7 +18,7 @@ jobs:
     - name: update
       run: apt-get update
     - name: dependencies
-      run: env DEBIAN_FRONTEND=noninteractive apt-get install -y clang cmake git libboost-dev libssl-dev
+      run: env DEBIAN_FRONTEND=noninteractive apt-get install -y clang cmake git libboost-dev libboost-system-dev libssl-dev
     - uses: actions/checkout@v2
     - name: submodules
       run: git submodule update --init --recursive
