@@ -16,8 +16,10 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: update
+      run: apt-get update
     - name: dependencies
-      run: apt-get update && apt-get install -y clang cmake git libboost-dev libssl-dev
+      run: env DEBIAN_FRONTEND=noninteractive apt-get install -y clang cmake git libboost-dev libssl-dev
     - name: submodules
       run: git submodule update --init --recursive
     - name: cmake
