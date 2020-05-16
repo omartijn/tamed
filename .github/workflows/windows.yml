@@ -18,7 +18,7 @@ jobs:
     - name: dependencies
       run: vcpkg install boost-beast openssl --triplet x64-windows
     - name: cmake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DTAMED_EXAMPLES=ON -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
     - name: build
       run: cmake --build build
     - name: test

@@ -18,7 +18,7 @@ jobs:
     - name: dependencies
       run: brew install boost openssl
     - name: cmake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DTAMED_EXAMPLES=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
     - name: build
       run: cmake --build build
     - name: test

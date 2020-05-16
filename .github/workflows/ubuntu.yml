@@ -23,7 +23,7 @@ jobs:
     - name: submodules
       run: git submodule update --init --recursive
     - name: cmake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DTAMED_EXAMPLES=ON -DCMAKE_CXX_COMPILER=/usr/bin/clang++
     - name: build
       run: cmake --build build
     - name: test
