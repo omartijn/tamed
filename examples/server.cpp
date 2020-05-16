@@ -38,8 +38,8 @@ int main()
     server_type                     server      { io_context                                        };
     boost::asio::ip::tcp::endpoint  endpoint    { boost::asio::ip::make_address("127.0.0.1"), 8080  };
 
-    server.add<handle_slash>(boost::beast::http::verb::get, "/");
-    server.add<handle_slash>(boost::beast::http::verb::get, "");
+    server.add<&handle_slash>(boost::beast::http::verb::get, "/");
+    server.add<&handle_slash>(boost::beast::http::verb::get, "");
 
     server.set_not_found<handle_not_found>();
 

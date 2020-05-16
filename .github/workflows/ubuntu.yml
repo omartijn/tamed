@@ -1,0 +1,30 @@
+name: ubuntu-latest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: ubuntu:20.04
+    
+    steps:
+    - name: update
+      run: apt-get update
+    - name: dependencies
+      run: env DEBIAN_FRONTEND=noninteractive apt-get install -y clang cmake git libboost-dev libboost-system-dev libssl-dev
+    - uses: actions/checkout@v2
+    - name: submodules
+      run: git submodule update --init --recursive
+    - name: cmake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DTAMED_EXAMPLES=ON -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+    - name: build
+      run: cmake --build build
+    - name: test
+      run: ./build/tests/tamed-test

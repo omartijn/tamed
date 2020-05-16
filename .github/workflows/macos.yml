@@ -1,0 +1,25 @@
+name: macos-latest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: submodules
+      run: git submodule update --init --recursive
+    - name: dependencies
+      run: brew install boost openssl
+    - name: cmake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DTAMED_EXAMPLES=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl
+    - name: build
+      run: cmake --build build
+    - name: test
+      run: ./build/tests/tamed-test
