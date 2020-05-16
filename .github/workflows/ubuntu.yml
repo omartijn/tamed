@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: dependencies
-      run: sudo apt-get update && sudo apt-get install -y clang cmake git libboost-dev libssl-dev
+      run: apt-get update && apt-get install -y clang cmake git libboost-dev libssl-dev
     - name: submodules
       run: git submodule update --init --recursive
     - name: cmake
