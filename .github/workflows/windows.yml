@@ -16,7 +16,7 @@ jobs:
     - name: submodules
       run: git submodule update --init --recursive
     - name: dependencies
-      run: vcpkg install boost openssl --triplet x64-windows
+      run: vcpkg install boost-beast openssl --triplet x64-windows
     - name: cmake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake
     - name: build
